@@ -19,23 +19,24 @@ BASE_URL=
 # CLINICAL_SEARCH_URL=https://your-bahmni-instance.com/bahmni/clinical/index.html#/default/patient/search
 
 # =============================================================================
-# REQUIRED: User Credentials
+# REQUIRED: User Credentials (base64 encoded)
 # =============================================================================
+# Note: Encode your credentials using: echo -n 'your-username' | base64
 # Admin User (for setup, API calls, and admin operations)
-USER_ADMIN_USERNAME=other.doctor
-USER_ADMIN_PASSWORD=Secret007
+USER_ADMIN_USERNAME=b3RoZXIuZG9jdG9y
+USER_ADMIN_PASSWORD=U2VjcmV0MDA3
 
 # Doctor User (for clinical tests)
-USER_DOCTOR_USERNAME=your-doctor-username
-USER_DOCTOR_PASSWORD=your-doctor-password
+USER_DOCTOR_USERNAME=eW91ci1kb2N0b3ItdXNlcm5hbWU=
+USER_DOCTOR_PASSWORD=eW91ci1kb2N0b3ItcGFzc3dvcmQ=
 
 # Nurse User (for nursing tests)
-USER_NURSE_USERNAME=your-nurse-username
-USER_NURSE_PASSWORD=your-nurse-password
+USER_NURSE_USERNAME=eW91ci1udXJzZS11c2VybmFtZQ==
+USER_NURSE_PASSWORD=eW91ci1udXJzZS1wYXNzd29yZA==
 
 # Receptionist User (for registration tests)
-USER_RECEPTIONIST_USERNAME=your-receptionist-username
-USER_RECEPTIONIST_PASSWORD=your-receptionist-password
+USER_RECEPTIONIST_USERNAME=eW91ci1yZWNlcHRpb25pc3QtdXNlcm5hbWU=
+USER_RECEPTIONIST_PASSWORD=eW91ci1yZWNlcHRpb25pc3QtcGFzc3dvcmQ=
 
 # =============================================================================
 # OPTIONAL: Default Settings

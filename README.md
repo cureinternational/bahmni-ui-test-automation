@@ -55,6 +55,10 @@ The project supports multiple environments through `.env` files:
 
 Create above files by using .env.example for your environment.
 
+**Important**: All usernames and passwords in `.env` files must be base64 encoded for security.
+- Encode credentials: `echo -n 'your-credential' | base64`
+- The framework automatically decodes them at runtime
+
 ## SSL Certificate Setup for Local Testing
 
 When testing against a local Bahmni instance with self-signed certificates, you need to extract and trust the SSL certificate.

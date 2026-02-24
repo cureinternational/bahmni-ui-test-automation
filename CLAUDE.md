@@ -81,10 +81,13 @@ NODE_ENV=local npx playwright test
 
 Create `.env.<env>` files based on `.env.example`. Required variables:
 - `BASE_URL` - Base Bahmni URL (all other URLs are derived from this)
-- `USER_ADMIN_USERNAME`, `USER_ADMIN_PASSWORD`
-- `USER_DOCTOR_USERNAME`, `USER_DOCTOR_PASSWORD`
-- `USER_NURSE_USERNAME`, `USER_NURSE_PASSWORD`
-- `USER_RECEPTIONIST_USERNAME`, `USER_RECEPTIONIST_PASSWORD`
+- `USER_ADMIN_USERNAME`, `USER_ADMIN_PASSWORD` (base64 encoded)
+- `USER_DOCTOR_USERNAME`, `USER_DOCTOR_PASSWORD` (base64 encoded)
+- `USER_NURSE_USERNAME`, `USER_NURSE_PASSWORD` (base64 encoded)
+- `USER_RECEPTIONIST_USERNAME`, `USER_RECEPTIONIST_PASSWORD` (base64 encoded)
+
+**Note**: All usernames and passwords must be base64 encoded in the .env files for security.
+Encode credentials using: `echo -n 'your-credential' | base64`
 
 Optional variables include locale, location, viewport settings, and timeouts.
 
