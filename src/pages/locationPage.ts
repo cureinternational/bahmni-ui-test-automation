@@ -21,7 +21,7 @@ export class LocationPage {
   // Locator selectors
   private readonly selectors = {
     locationDropdown: '#location',
-    continueButton: 'button:has-text("Continue")',
+    loginButton: 'button:has-text("Login")',
     pageTitle: 'text=Select login location',
     helpLink: 'a[href*="bahmni.atlassian.net"]',
   } as const;
@@ -31,11 +31,11 @@ export class LocationPage {
   }
 
   /**
-   * Select a location and continue
+   * Select a location and login
    * @param location - Location to select (e.g., 'OPD-1', 'Emergency', etc.)
    */
   async selectLocation(location: string) {
     await this.page.locator(this.selectors.locationDropdown).selectOption(location);
-    await this.page.locator(this.selectors.continueButton).click();
+    await this.page.locator(this.selectors.loginButton).click();
   }
 }

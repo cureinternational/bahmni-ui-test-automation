@@ -14,11 +14,11 @@ allure-report/
 # Environment files with credentials
 .env
 .env.local
-.env.dev
-.env.qa
-.env.*.local
-# Keep the example file
+# Keep the committed environment files and examples
+!.env.et
+!.env.niger
 !.env.example
+!.env*.example
 
 # Claude Code
 .claude

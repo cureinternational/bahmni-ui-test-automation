@@ -36,20 +36,23 @@ export class CreatePatientPage {
     // Patient ID format - Dynamic ID
     patientIdFormatDropdown: 'button[role="combobox"]:has-text("ABC")',
 
-    // Basic information
-    firstNameInput: '#first-name',
-    middleNameInput: '#middle-name',
-    lastNameInput: '#last-name',
-    genderDropdown: 'button[role="combobox"]:has-text("Select")',
+    // CURE patient checkbox (old registration UI)
+    curePatientCheckbox: 'input[type="checkbox"][name="shouldGenerateIdentifier"]',
 
-    // Age fields
-    yearsAgeInput: '#age-years',
-    monthsAgeInput: '#age-months',
-    daysAgeInput: '#age-days',
+    // Basic information - Support both old and new registration UIs
+    firstNameInput: '#first-name, input[placeholder="First Name"]',
+    middleNameInput: '#middle-name, input[placeholder="Middle Name"]',
+    lastNameInput: '#last-name, input[placeholder="Last Name"]',
+    genderDropdown: 'select#gender',
 
-    // Date of birth
-    dateOfBirthInput: '#date-of-birth',
-    estimatedCheckbox: '#accuracy',
+    // Age fields - Support both old and new registration UIs
+    yearsAgeInput: '#age-years, input[name="ageYears"]',
+    monthsAgeInput: '#age-months, input[name="ageMonths"]',
+    daysAgeInput: '#age-days, input[name="ageDays"]',
+
+    // Date of birth - Support both old and new registration UIs
+    dateOfBirthInput: '#date-of-birth, #birthdate',
+    estimatedCheckbox: '#accuracy, input[name="birthdateEstimated"]',
     birthTimeInput: '#birth-time',
 
     // Address information
@@ -60,12 +63,12 @@ export class CreatePatientPage {
     districtDropdown: '#countyDistrict',
     stateDropdown: '#stateProvince',
 
-    // Contact information - UUIDs as IDs
-    phoneNumberInput: 'input[placeholder="Phone number"]',
+    // Contact information - Support both old and new registration UIs
+    phoneNumberInput: 'input[placeholder="Phone number"], input[name="phonenumber"]',
     alternatePhoneInput: 'input[placeholder="Alternate phone number"]',
 
     // Additional information
-    emailInput: 'input[placeholder="Email"]',
+    emailInput: 'input[placeholder="Email"], input[name="email"]',
 
     // Additional identifiers - Dynamic IDs with identifier prefix
     drivingLicenceInput: 'input[placeholder="Driving Licence"]',
@@ -123,8 +126,8 @@ export class CreatePatientPage {
    * @param gender - Gender to select
    */
   async selectGender(gender: string) {
-    await this.page.getByRole('combobox', { name: /gender/i }).click();
-    await this.page.getByRole('option', { name: gender, exact: true }).click();
+    const selectElement = this.page.locator(this.selectors.genderDropdown);
+    await selectElement.selectOption({ label: gender });
   }
 
   /**
@@ -274,6 +277,12 @@ export class CreatePatientPage {
     phoneNumber?: string;
     email?: string;
   }) {
+    // Check CURE patient checkbox if present (old registration UI)
+    const cureCheckbox = this.page.locator(this.selectors.curePatientCheckbox);
+    if (await cureCheckbox.isVisible().catch(() => false)) {
+      await cureCheckbox.check();
+    }
+
     await this.fillBasicInformation(
       patientData.firstName,
       patientData.lastName,

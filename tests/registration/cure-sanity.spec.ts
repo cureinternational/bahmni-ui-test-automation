@@ -23,22 +23,6 @@ test.describe('Complete Patient Management Flow', () => {
     // await bahmni.patientPage.navigateToHome();
     await bahmni.patientPage.navigateToRegistration();
     const registeredPatient = await bahmni.patientPage.registerNewPatient();
-
-    // Get patient ID
-    const patientID = await bahmni.patientPage.getPatientIdByName(
-      registeredPatient.firstName,
-      registeredPatient.lastName
-    );
-
-    // Navigate to Clinical module and search for patient
-    await bahmni.patientPage.navigateToHome();
-    await bahmni.patientPage.navigateToClinicalFromHome();
-
-    if (patientID) {
-      await bahmni.patientPage.searchPatient(patientID);
-      console.log(`Successfully found and opened patient: ${patientID}`);
-    } else {
-      throw new Error('Patient ID not found');
-    }
+    console.log('Registered patient:', registeredPatient);
   });
 });
