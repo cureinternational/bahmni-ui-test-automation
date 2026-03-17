@@ -1,0 +1,14 @@
+fileignoreconfig:
+- filename: .env copy.example
+  checksum: 83678912949d625b9296265f2d2503254b275e2d1d28c3a5528b650776f19b00
+- filename: .env.et
+  checksum: 8e717b5da24fb13b4fda531bb10fa862968ef90ba849b5acf7502f1f1a0b3af5
+- filename: .env.example
+  checksum: 62755304f3905b7740c2b6dc0ba6ffd5b4ba464ae9776ca0f4262b8700878c31
+- filename: .env.niger
+  checksum: 8ccb29cb79c7c8b6bf497cf1dad132bfde5384c38aceeac53b88fcc21ab2fc45
+- filename: src/config/env.config.ts
+  checksum: 780ef2de4be3f670fa03d3397cc84825b728d1b4bebb8bfd3a224385cbae05f3
+- filename: package-lock.json
+  checksum: 139a8456375d6124c132ebdd2caa9facfced1f46f03fa4cd73d5a68d002a9cae
+version: "1.0"

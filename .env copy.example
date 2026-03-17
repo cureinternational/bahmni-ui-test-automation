@@ -1,11 +1,11 @@
 # Environment Configuration Template
-# Copy this file to .env.et, .env.niger, .env.local, or other environment names and update with your values
+# Copy this file to .env.et, .env.niger, or .env.local and update with your values
 # IMPORTANT: Never commit actual .env.* files with real credentials to git!
 
 # =============================================================================
 # REQUIRED: Base URL (all other URLs will be derived from this if not specified)
 # =============================================================================
-BASE_URL=https://your-bahmni-instance.com
+BASE_URL=
 
 # =============================================================================
 # OPTIONAL: Application URLs (if not set, will be constructed from BASE_URL)
@@ -23,8 +23,8 @@ BASE_URL=https://your-bahmni-instance.com
 # =============================================================================
 # Note: Encode your credentials using: echo -n 'your-username' | base64
 # Admin User (for setup, API calls, and admin operations)
-USER_ADMIN_USERNAME=eW91ci1hZG1pbi11c2VybmFtZQ==
-USER_ADMIN_PASSWORD=eW91ci1hZG1pbi1wYXNzd29yZA==
+USER_ADMIN_USERNAME=b3RoZXIuZG9jdG9y
+USER_ADMIN_PASSWORD=U2VjcmV0MDA3
 
 # Doctor User (for clinical tests)
 USER_DOCTOR_USERNAME=eW91ci1kb2N0b3ItdXNlcm5hbWU=

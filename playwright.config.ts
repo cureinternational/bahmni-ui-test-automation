@@ -4,10 +4,10 @@ import * as dotenv from 'dotenv';
 
 /**
  * Read environment variables from file.
- * Load environment based on NODE_ENV (default: dev)
+ * Load environment based on NODE_ENV (default: et)
  * Usage: NODE_ENV=local npx playwright test
  */
-const env = process.env.NODE_ENV || 'dev';
+const env = process.env.NODE_ENV || 'et';
 dotenv.config({ path: path.resolve(process.cwd(), `.env.${env}`) });
 
 /**

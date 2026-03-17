@@ -4,6 +4,7 @@ import { LocationPage } from './locationPage';
 import { HomePage } from './homePage';
 import { RegistrationSearchPage } from './registrationSearchPage';
 import { CreatePatientPage } from './createPatientPage';
+import { PatientPage } from './patientPage';
 import { ClinicalPage } from './clinicalPage';
 import { ConsultationDashboard } from './consultationDashboard';
 import { NewConsultationPage } from './newConsultationPage';
@@ -13,6 +14,7 @@ import { DeathNoteForm } from './deathNoteForm';
 import { HistoryAndExaminationForm } from './historyAndExaminationForm';
 import { VitalsForm } from './vitalsForm';
 import { SecondVitalsForm } from './secondVitalsForm';
+import { OrderNewPage } from './orderNewPage';
 
 /**
  * PageFactory class to initialize all page objects
@@ -24,6 +26,7 @@ export class PageFactory {
   readonly homePage: HomePage;
   readonly registrationSearchPage: RegistrationSearchPage;
   readonly createPatientPage: CreatePatientPage;
+  readonly patientPage: PatientPage;
   readonly clinicalPage: ClinicalPage;
   readonly consultationDashboard: ConsultationDashboard;
   readonly newConsultationPage: NewConsultationPage;
@@ -33,6 +36,7 @@ export class PageFactory {
   readonly historyAndExaminationForm: HistoryAndExaminationForm;
   readonly vitalsForm: VitalsForm;
   readonly secondVitalsForm: SecondVitalsForm;
+  readonly orderNewPage: OrderNewPage;
 
   constructor(page: Page) {
     this.loginPage = new LoginPage(page);
@@ -40,6 +44,7 @@ export class PageFactory {
     this.homePage = new HomePage(page);
     this.registrationSearchPage = new RegistrationSearchPage(page);
     this.createPatientPage = new CreatePatientPage(page);
+    this.patientPage = new PatientPage(page);
     this.clinicalPage = new ClinicalPage(page);
     this.consultationDashboard = new ConsultationDashboard(page);
     this.newConsultationPage = new NewConsultationPage(page);
@@ -49,5 +54,6 @@ export class PageFactory {
     this.historyAndExaminationForm = new HistoryAndExaminationForm(page);
     this.vitalsForm = new VitalsForm(page);
     this.secondVitalsForm = new SecondVitalsForm(page);
+    this.orderNewPage = new OrderNewPage(page);
   }
 }

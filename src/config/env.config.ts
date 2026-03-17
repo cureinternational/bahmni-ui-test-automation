@@ -2,10 +2,17 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 
 // Load environment variables based on NODE_ENV
-const env = process.env.NODE_ENV || 'dev';
+const env = process.env.NODE_ENV || 'et';
 const envFile = `.env.${env}`;
 
 dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+
+/**
+ * Decode base64 encoded value
+ */
+function decodeBase64(encoded: string): string {
+  return Buffer.from(encoded, 'base64').toString('utf-8');
+}
 
 /**
  * Get required environment variable or throw error
@@ -23,6 +30,14 @@ function getRequiredEnv(key: string): string {
  */
 function getOptionalEnv(key: string, defaultValue: string): string {
   return process.env[key] || defaultValue;
+}
+
+/**
+ * Get required credential (base64 encoded) and decode it
+ */
+function getRequiredCredential(key: string): string {
+  const encodedValue = getRequiredEnv(key);
+  return decodeBase64(encodedValue);
 }
 
 export const config = {
@@ -43,23 +58,23 @@ export const config = {
       `${getRequiredEnv('BASE_URL')}/bahmni/clinical/index.html#/default/patient/search`,
   },
 
-  // Credentials - Multiple Users (Required for security)
+  // Credentials - Multiple Users (base64 encoded in .env files for security)
   users: {
     admin: {
-      username: getRequiredEnv('USER_ADMIN_USERNAME'),
-      password: getRequiredEnv('USER_ADMIN_PASSWORD'),
+      username: getRequiredCredential('USER_ADMIN_USERNAME'),
+      password: getRequiredCredential('USER_ADMIN_PASSWORD'),
     },
     doctor: {
-      username: getRequiredEnv('USER_DOCTOR_USERNAME'),
-      password: getRequiredEnv('USER_DOCTOR_PASSWORD'),
+      username: getRequiredCredential('USER_DOCTOR_USERNAME'),
+      password: getRequiredCredential('USER_DOCTOR_PASSWORD'),
     },
     nurse: {
-      username: getRequiredEnv('USER_NURSE_USERNAME'),
-      password: getRequiredEnv('USER_NURSE_PASSWORD'),
+      username: getRequiredCredential('USER_NURSE_USERNAME'),
+      password: getRequiredCredential('USER_NURSE_PASSWORD'),
     },
     receptionist: {
-      username: getRequiredEnv('USER_RECEPTIONIST_USERNAME'),
-      password: getRequiredEnv('USER_RECEPTIONIST_PASSWORD'),
+      username: getRequiredCredential('USER_RECEPTIONIST_USERNAME'),
+      password: getRequiredCredential('USER_RECEPTIONIST_PASSWORD'),
     },
   },
 

@@ -50,9 +50,14 @@ Page objects are created using the `/page` command with data-test-id attributes 
 The project supports multiple environments through `.env` files:
 
 - `.env.local` - For local testing (https://localhost)
-- `.env.dev` - For development environment (https://docker.standard.mybahmni.in)
+- `.env.et` - For Ethiopia environment (default)
+- `.env.niger` - For Niger environment
 
 Create above files by using .env.example for your environment.
+
+**Important**: All usernames and passwords in `.env` files must be base64 encoded for security.
+- Encode credentials: `echo -n 'your-credential' | base64`
+- The framework automatically decodes them at runtime
 
 ## SSL Certificate Setup for Local Testing
 
@@ -75,14 +80,18 @@ sudo security add-trusted-cert -d -r trustRoot -p ssl -k /Library/Keychains/Syst
 ## Running Tests
 
 ```bash
-# Run all tests
+# Run all tests (uses Ethiopia env by default)
+npm test
+# Run tests in Ethiopia environment
+npm run test:et
+# Run tests in Niger environment
+npm run test:niger
+# Run tests in local environment
 npm run test:local
-# Run all tests in dev env
-npm run test:dev
 # Run with headed browser
-npm run test:headed:local
+npm run test:headed
 # Run specific test file
-npm run test:local -- tests/sanity.spec.ts --project=chromium
+npm run test:et -- tests/sanity.spec.ts --project=chromium
 # Run specific browser
 npm run test:chromium
 npm run test:firefox
