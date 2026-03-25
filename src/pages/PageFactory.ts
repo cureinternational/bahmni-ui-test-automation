@@ -4,6 +4,7 @@ import { LocationPage } from './locationPage';
 import { HomePage } from './homePage';
 import { RegistrationSearchPage } from './registrationSearchPage';
 import { CreatePatientPage } from './createPatientPage';
+import { PatientPage } from './patientPage';
 import { ClinicalPage } from './clinicalPage';
 import { ConsultationDashboard } from './consultationDashboard';
 import { NewConsultationPage } from './newConsultationPage';
@@ -24,6 +25,7 @@ export class PageFactory {
   readonly homePage: HomePage;
   readonly registrationSearchPage: RegistrationSearchPage;
   readonly createPatientPage: CreatePatientPage;
+  readonly patientPage: PatientPage;
   readonly clinicalPage: ClinicalPage;
   readonly consultationDashboard: ConsultationDashboard;
   readonly newConsultationPage: NewConsultationPage;
@@ -40,6 +42,7 @@ export class PageFactory {
     this.homePage = new HomePage(page);
     this.registrationSearchPage = new RegistrationSearchPage(page);
     this.createPatientPage = new CreatePatientPage(page);
+    this.patientPage = new PatientPage(page);
     this.clinicalPage = new ClinicalPage(page);
     this.consultationDashboard = new ConsultationDashboard(page);
     this.newConsultationPage = new NewConsultationPage(page);

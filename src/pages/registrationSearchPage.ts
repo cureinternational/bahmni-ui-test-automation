@@ -20,7 +20,7 @@ export class RegistrationSearchPage {
     // Header elements
     homeLink: 'a:has-text("Home")',
     userButton: 'button[aria-label="user"]',
-    createNewPatientButton: 'button:has-text("Create new patient")',
+    createNewPatientButton: 'a:has-text("Create New"), button:has-text("Create new patient")',
 
     // Search by name or ID section
     nameOrIdSearchBox: '#search-patient-searchbar',
