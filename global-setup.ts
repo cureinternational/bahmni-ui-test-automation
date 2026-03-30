@@ -66,13 +66,10 @@ async function createRelationshipType(aIsToB: string, bIsToA: string, baseUrl: s
       console.log(`  ✓ Created: ${aIsToB}-${bIsToA} (UUID: ${data.uuid})`);
       return { success: true, uuid: data.uuid };
     } else {
-      const errorText = await response.text();
-      console.error(`  ✗ Failed to create ${aIsToB}-${bIsToA}: ${errorText}`);
-      return { success: false, error: errorText };
+      return { success: false };
     }
-  } catch (error) {
-    console.error(`  ✗ Error creating ${aIsToB}-${bIsToA}: ${error}`);
-    return { success: false, error: String(error) };
+  } catch {
+    return { success: false };
   }
 }
 
