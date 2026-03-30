@@ -50,16 +50,16 @@ export const config = {
       password: getRequiredEnv('USER_ADMIN_PASSWORD'),
     },
     doctor: {
-      username: getRequiredEnv('USER_DOCTOR_USERNAME'),
-      password: getRequiredEnv('USER_DOCTOR_PASSWORD'),
+      username: getOptionalEnv('USER_DOCTOR_USERNAME', ''),
+      password: getOptionalEnv('USER_DOCTOR_PASSWORD', ''),
     },
     nurse: {
-      username: getRequiredEnv('USER_NURSE_USERNAME'),
-      password: getRequiredEnv('USER_NURSE_PASSWORD'),
+      username: getOptionalEnv('USER_NURSE_USERNAME', ''),
+      password: getOptionalEnv('USER_NURSE_PASSWORD', ''),
     },
     receptionist: {
-      username: getRequiredEnv('USER_RECEPTIONIST_USERNAME'),
-      password: getRequiredEnv('USER_RECEPTIONIST_PASSWORD'),
+      username: getOptionalEnv('USER_RECEPTIONIST_USERNAME', ''),
+      password: getOptionalEnv('USER_RECEPTIONIST_PASSWORD', ''),
     },
   },
 
