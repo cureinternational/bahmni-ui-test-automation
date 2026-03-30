@@ -36,20 +36,29 @@ jobs:
 
       - name: Write .env file
         run: |
-          cat > .env.et << EOF
-          BASE_URL=${{ secrets.BASE_URL }}
-          USER_ADMIN_USERNAME=${{ secrets.USER_ADMIN_USERNAME }}
-          USER_ADMIN_PASSWORD=${{ secrets.USER_ADMIN_PASSWORD }}
-          USER_DOCTOR_USERNAME=${{ secrets.USER_DOCTOR_USERNAME }}
-          USER_DOCTOR_PASSWORD=${{ secrets.USER_DOCTOR_PASSWORD }}
-          USER_NURSE_USERNAME=${{ secrets.USER_NURSE_USERNAME }}
-          USER_NURSE_PASSWORD=${{ secrets.USER_NURSE_PASSWORD }}
-          USER_RECEPTIONIST_USERNAME=${{ secrets.USER_RECEPTIONIST_USERNAME }}
-          USER_RECEPTIONIST_PASSWORD=${{ secrets.USER_RECEPTIONIST_PASSWORD }}
-          DEFAULT_LOCATION=${{ secrets.DEFAULT_LOCATION }}
-          HEADLESS=true
-          TIMEOUT=60000
-          EOF
+          echo "BASE_URL=$BASE_URL" >> .env.et
+          echo "USER_ADMIN_USERNAME=$USER_ADMIN_USERNAME" >> .env.et
+          echo "USER_ADMIN_PASSWORD=$USER_ADMIN_PASSWORD" >> .env.et
+          echo "USER_DOCTOR_USERNAME=$USER_DOCTOR_USERNAME" >> .env.et
+          echo "USER_DOCTOR_PASSWORD=$USER_DOCTOR_PASSWORD" >> .env.et
+          echo "USER_NURSE_USERNAME=$USER_NURSE_USERNAME" >> .env.et
+          echo "USER_NURSE_PASSWORD=$USER_NURSE_PASSWORD" >> .env.et
+          echo "USER_RECEPTIONIST_USERNAME=$USER_RECEPTIONIST_USERNAME" >> .env.et
+          echo "USER_RECEPTIONIST_PASSWORD=$USER_RECEPTIONIST_PASSWORD" >> .env.et
+          echo "DEFAULT_LOCATION=$DEFAULT_LOCATION" >> .env.et
+          echo "HEADLESS=true" >> .env.et
+          echo "TIMEOUT=60000" >> .env.et
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          USER_ADMIN_USERNAME: ${{ secrets.USER_ADMIN_USERNAME }}
+          USER_ADMIN_PASSWORD: ${{ secrets.USER_ADMIN_PASSWORD }}
+          USER_DOCTOR_USERNAME: ${{ secrets.USER_DOCTOR_USERNAME }}
+          USER_DOCTOR_PASSWORD: ${{ secrets.USER_DOCTOR_PASSWORD }}
+          USER_NURSE_USERNAME: ${{ secrets.USER_NURSE_USERNAME }}
+          USER_NURSE_PASSWORD: ${{ secrets.USER_NURSE_PASSWORD }}
+          USER_RECEPTIONIST_USERNAME: ${{ secrets.USER_RECEPTIONIST_USERNAME }}
+          USER_RECEPTIONIST_PASSWORD: ${{ secrets.USER_RECEPTIONIST_PASSWORD }}
+          DEFAULT_LOCATION: ${{ secrets.DEFAULT_LOCATION }}
 
       - name: Run Playwright tests
         run: NODE_ENV=et npx playwright test tests/registration/sanity.spec.ts --project=chromium

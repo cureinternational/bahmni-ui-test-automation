@@ -10,5 +10,5 @@ fileignoreconfig:
 - filename: src/config/env.config.ts
   checksum: f575a226c5b432144d840810d74a8efe4e038099f505a0944812ef602b2ab0ec
 - filename: .github/workflows/playwright-tests.yml
-  checksum: 3dce83662ff07829466c96baf73381c1f79e8c6e86a800d155e6975d2ce19ed9
+  checksum: 2732242b06e46017d870b53d934a86994a447a579d1d0a445a2759b5a2cedca0
 version: "1.0"
