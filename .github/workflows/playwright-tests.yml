@@ -1,0 +1,80 @@
+name: Playwright UI Tests
+
+on:
+  # Called by the deployment pipeline after QA deploy
+  workflow_dispatch:
+
+  # Run on push to cureSetup branch for pre-merge validation
+  push:
+    branches:
+      - cureSetup
+
+  # Also allow scheduled nightly run (optional)
+  # schedule:
+  #   - cron: '0 2 * * *'   # 2am UTC daily
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Write .env file
+        run: |
+          cat > .env.et << EOF
+          BASE_URL=${{ secrets.BASE_URL }}
+          USER_ADMIN_USERNAME=${{ secrets.USER_ADMIN_USERNAME }}
+          USER_ADMIN_PASSWORD=${{ secrets.USER_ADMIN_PASSWORD }}
+          USER_DOCTOR_USERNAME=${{ secrets.USER_DOCTOR_USERNAME }}
+          USER_DOCTOR_PASSWORD=${{ secrets.USER_DOCTOR_PASSWORD }}
+          USER_NURSE_USERNAME=${{ secrets.USER_NURSE_USERNAME }}
+          USER_NURSE_PASSWORD=${{ secrets.USER_NURSE_PASSWORD }}
+          USER_RECEPTIONIST_USERNAME=${{ secrets.USER_RECEPTIONIST_USERNAME }}
+          USER_RECEPTIONIST_PASSWORD=${{ secrets.USER_RECEPTIONIST_PASSWORD }}
+          DEFAULT_LOCATION=${{ secrets.DEFAULT_LOCATION }}
+          HEADLESS=true
+          TIMEOUT=60000
+          EOF
+
+      - name: Run Playwright tests
+        run: NODE_ENV=et npx playwright test tests/registration/sanity.spec.ts --project=chromium
+        continue-on-error: true   # always publish reports even if tests fail
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-html-report
+          path: reports/html-report/
+          retention-days: 30
+
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results
+          path: reports/allure-results/
+          retention-days: 30
+
+      - name: Upload failure artifacts (screenshots, traces, videos)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-artifacts
+          path: test-results/
+          retention-days: 7

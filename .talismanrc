@@ -1,10 +1,14 @@
 fileignoreconfig:
 - filename: .env.et
-  checksum: 41cd058c9b646de7548207212195354353567a0ae3f9b05c6588a6011b7a1ff0
+  checksum: 9655edfdff48e4dc5c8c0d982662c93744b8384f7b03f198de658ef4be93a706
 - filename: .env.example
   checksum: 799d71e16f53040f691f00c5c80d6b513e1c09feda0b30e35db30fada68b59bb
 - filename: .env.niger
   checksum: c925bcc2249e9aa767c018d6b73ec26ad57881024855253b7b7e72df6e394a59
 - filename: package-lock.json
   checksum: aafdfa86d2b5c86ad40ef878b37709be93ec52ac401b791b723a01e62e5d8214
+- filename: src/config/env.config.ts
+  checksum: f575a226c5b432144d840810d74a8efe4e038099f505a0944812ef602b2ab0ec
+- filename: .github/workflows/playwright-tests.yml
+  checksum: 3dce83662ff07829466c96baf73381c1f79e8c6e86a800d155e6975d2ce19ed9
 version: "1.0"

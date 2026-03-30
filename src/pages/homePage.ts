@@ -10,9 +10,11 @@ export class HomePage {
   // Constants for module names (public as they may be used in tests)
   readonly MODULES = {
     REGISTRATION: 'Registration',
-    PROGRAMS: 'Programs',
+    REGISTRATION_NEW: 'Registration',
+    PROGRAMS: 'Triage / Programs',
+    TRIAGE_PROGRAMS: 'Triage / Programs',
     CLINICAL: 'Clinical',
-    REGISTRATION_NEW: 'Registration New',
+    INPATIENT: 'InPatient',
     RADIOLOGY_UPLOAD: 'Radiology Upload',
     PATIENT_DOCUMENTS: 'Patient Documents',
     BED_MANAGEMENT: 'Bed Management',
@@ -35,7 +37,7 @@ export class HomePage {
     changePasswordLink: 'a:has-text("Change Password")',
 
     // Module links - using class and text combination
-    moduleLink: (moduleName: string) => `a.button.app:has-text("${moduleName}")`,
+    moduleLink: (moduleName: string) => `a:has-text("${moduleName}"), a.button.app:has-text("${moduleName}")`,
   } as const;
 
   constructor(page: Page) {

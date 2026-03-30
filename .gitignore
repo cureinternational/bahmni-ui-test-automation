@@ -31,3 +31,4 @@ allure-report/
 .DS_Store
 reports/
 test-data/.DS_Store
+talisman_report/

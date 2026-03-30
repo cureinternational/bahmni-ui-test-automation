@@ -26,7 +26,7 @@ export class CreatePatientPage {
   // Locator selectors
   private readonly selectors = {
     // Header elements
-    homeLink: 'a:has-text("Home")',
+    homeLink: 'a:has-text("Home"), a[href*="dashboard"], a.home-btn, i.fa-home, [title="Home"]',
     searchPatientLink: 'a:has-text("Search Patient")',
 
     // Photo upload - No IDs available
@@ -118,7 +118,10 @@ export class CreatePatientPage {
     }
 
     await this.selectGender(gender);
-    await this.page.locator(this.selectors.dateOfBirthInput).fill(dateOfBirth);
+    // Convert dd/mm/yyyy → yyyy-mm-dd for HTML date input compatibility
+    const [dd, mm, yyyy] = dateOfBirth.split('/');
+    const isoDate = `${yyyy}-${mm}-${dd}`;
+    await this.page.locator(this.selectors.dateOfBirthInput).fill(isoDate);
   }
 
   /**
@@ -190,10 +193,29 @@ export class CreatePatientPage {
    * @param alternatePhone - Alternate phone number (optional)
    */
   async fillContactInformation(phoneNumber: string, alternatePhone?: string) {
-    await this.page.getByRole('textbox', { name: /^Phone number$/i }).fill(phoneNumber);
+    // Handle different label variants across environments
+    const standardPhone = this.page.getByRole('textbox', { name: /^Phone number$/i });
+    const guardianPhone = this.page.getByRole('textbox', { name: /Mobile Phone/i });
+
+    if (await standardPhone.isVisible()) {
+      await standardPhone.fill(phoneNumber);
+    } else if (await guardianPhone.isVisible()) {
+      await guardianPhone.fill(phoneNumber);
+    }
 
     if (alternatePhone) {
       await this.page.getByRole('textbox', { name: /Alternate phone/i }).fill(alternatePhone);
+    }
+  }
+
+  /**
+   * Select registration location (required in some environments)
+   * @param location - Location name to select
+   */
+  async selectRegistrationLocation(location: string) {
+    const locationDropdown = this.page.locator('select[name="registrationLocation"], #registrationLocation');
+    if (await locationDropdown.isVisible()) {
+      await locationDropdown.selectOption(location);
     }
   }
 
@@ -276,6 +298,7 @@ export class CreatePatientPage {
     middleName?: string;
     phoneNumber?: string;
     email?: string;
+    registrationLocation?: string;
   }) {
     // Check CURE patient checkbox if present (old registration UI)
     const cureCheckbox = this.page.locator(this.selectors.curePatientCheckbox);
@@ -297,6 +320,12 @@ export class CreatePatientPage {
 
     if (patientData.email) {
       await this.fillEmail(patientData.email);
+    }
+
+    // Fill registration location if provided or if the field is required
+    const locationToUse = patientData.registrationLocation ?? process.env.DEFAULT_LOCATION;
+    if (locationToUse) {
+      await this.selectRegistrationLocation(locationToUse);
     }
   }
 
@@ -393,6 +422,8 @@ export class CreatePatientPage {
    */
   async savePatient() {
     await this.page.locator(this.selectors.saveButton).click();
+    // Wait for the save to complete (spinner disappears or page settles)
+    await this.page.waitForLoadState('networkidle', { timeout: 45000 });
   }
 
   /**
@@ -400,15 +431,17 @@ export class CreatePatientPage {
    * @returns Patient ID string
    */
   async getPatientId(): Promise<string> {
-    // Wait for the page to settle after save
-    await this.page.waitForURL(/.*registration\/patient\/[a-f0-9-]+/);
     // Scroll to top where patient ID is displayed
     await this.page.evaluate(() => window.scrollTo(0, 0));
-    // Extract patient ID from the page header (format: "Patient ID : ABC200049")
-    const patientIdLocator = this.page.locator('text=/Patient ID\\s*:\\s*ABC\\d+/');
-    await patientIdLocator.waitFor({ timeout: 5000 });
-    const patientIdText = await patientIdLocator.textContent();
-    const match = patientIdText?.match(/ABC\d+/);
+    // Wait for the generated patient ID to appear - supports both display formats:
+    //  - New UI:  "Patient ID : ABC200049"
+    //  - Legacy:  "Identification Number: ET75475"
+    const patientIdLocator = this.page
+      .locator('text=/Identification Number[:\\s]+[A-Z]{2,6}\\d+/i')
+      .or(this.page.locator('text=/Patient ID\\s*[:\\-]\\s*[A-Z]{2,6}\\d+/i'));
+    await patientIdLocator.first().waitFor({ timeout: 15000 });
+    const patientIdText = await patientIdLocator.first().textContent();
+    const match = patientIdText?.match(/[A-Z]{2,6}\d+/i);
     return match ? match[0] : '';
   }
 

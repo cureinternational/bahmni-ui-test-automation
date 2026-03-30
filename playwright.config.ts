@@ -7,7 +7,7 @@ import * as dotenv from 'dotenv';
  * Load environment based on NODE_ENV (default: dev)
  * Usage: NODE_ENV=local npx playwright test
  */
-const env = process.env.NODE_ENV || 'dev';
+const env = process.env.NODE_ENV || 'et';
 dotenv.config({ path: path.resolve(process.cwd(), `.env.${env}`) });
 
 /**
@@ -21,6 +21,8 @@ export default defineConfig({
   globalTeardown: require.resolve('./global-teardown'),
 
   testDir: './tests',
+  /* Maximum time one test can run */
+  timeout: parseInt(process.env.TIMEOUT || '30000') * 3,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

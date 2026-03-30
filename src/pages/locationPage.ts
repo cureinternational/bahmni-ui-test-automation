@@ -10,6 +10,7 @@ export class LocationPage {
   // Constants for location options
   readonly LOCATION_OPTIONS = {
     ANC: 'ANC',
+    CURE_ETHIOPIA_HOSPITAL: 'CURE Ethiopia Hospital',
     EMERGENCY: 'Emergency',
     GENERAL_WARD: 'General Ward',
     OPD_1: 'OPD-1',
@@ -21,7 +22,7 @@ export class LocationPage {
   // Locator selectors
   private readonly selectors = {
     locationDropdown: '#location',
-    loginButton: 'button:has-text("Login")',
+    continueButton: 'button:has-text("Continue")',
     pageTitle: 'text=Select login location',
     helpLink: 'a[href*="bahmni.atlassian.net"]',
   } as const;
@@ -36,6 +37,6 @@ export class LocationPage {
    */
   async selectLocation(location: string) {
     await this.page.locator(this.selectors.locationDropdown).selectOption(location);
-    await this.page.locator(this.selectors.loginButton).click();
+    await this.page.locator(this.selectors.continueButton).click();
   }
 }

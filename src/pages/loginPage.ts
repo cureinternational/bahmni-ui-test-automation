@@ -52,5 +52,6 @@ export class LoginPage {
     await this.page.locator(this.selectors.usernameInput).fill(username);
     await this.page.locator(this.selectors.passwordInput).fill(password);
     await this.page.locator(this.selectors.loginButton).first().click();
+    await this.page.waitForURL(/.*loginLocation/);
   }
 }

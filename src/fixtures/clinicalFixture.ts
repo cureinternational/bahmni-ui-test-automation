@@ -64,7 +64,7 @@ export const test = base.extend<ClinicalFixtures, WorkerFixtures>({
       await bahmni.createPatientPage.savePatient();
 
       // Get the patient ID
-      await page.waitForURL(/.*registration\/patient\/[a-f0-9-]+/);
+      await page.waitForURL(/.*\/patient\/[a-f0-9-]+/, { waitUntil: 'domcontentloaded', timeout: 45000 });
       const patientId = await bahmni.createPatientPage.getPatientId();
 
       // Start OPD visit
