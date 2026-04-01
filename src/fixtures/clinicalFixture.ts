@@ -42,40 +42,50 @@ export const test = base.extend<ClinicalFixtures, WorkerFixtures>({
       const page = await context.newPage();
       const bahmni = new PageFactory(page);
       const adminUser = config.getUser('admin');
-      const patientData = generatePatientData();
 
-      // Login and navigate to registration (only once!)
+      // Login once
       await bahmni.loginPage.goto();
       await bahmni.loginPage.login(adminUser.username, adminUser.password);
       await bahmni.locationPage.selectLocation(config.defaults.location);
-      await bahmni.homePage.navigateToModule(bahmni.homePage.MODULES.REGISTRATION_NEW);
-      await bahmni.registrationSearchPage.clickCreateNewPatientBtn();
 
-      // Create patient with basic information
-      await bahmni.createPatientPage.createPatient({
-        firstName: patientData.firstName,
-        lastName: patientData.lastName,
-        gender: patientData.gender,
-        dateOfBirth: patientData.dateOfBirth,
-        middleName: patientData.middleName,
-      });
+      let patientId: string;
+      let patientData: ReturnType<typeof generatePatientData>;
 
-      // Save patient
-      await bahmni.createPatientPage.savePatient();
+      const existingPatientId = process.env.TEST_PATIENT_ID;
 
-      // Get the patient ID
-      await page.waitForURL(/.*\/patient\/[a-f0-9-]+/, { waitUntil: 'domcontentloaded', timeout: 45000 });
-      const patientId = await bahmni.createPatientPage.getPatientId();
+      if (existingPatientId) {
+        // Reuse existing patient — skip registration entirely
+        console.log(`[clinicalFixture] Reusing existing patient: ${existingPatientId}`);
+        patientId = existingPatientId;
+        patientData = generatePatientData(); // stub, not used in most tests
+      } else {
+        // Create a fresh patient
+        patientData = generatePatientData();
+        await bahmni.homePage.navigateToModule(bahmni.homePage.MODULES.REGISTRATION_NEW);
+        await bahmni.registrationSearchPage.clickCreateNewPatientBtn();
 
-      // Start OPD visit
-      await bahmni.createPatientPage.saveAndStartOPDVisit();
-      await page.waitForLoadState('networkidle');
+        await bahmni.createPatientPage.createPatient({
+          firstName: patientData.firstName,
+          lastName: patientData.lastName,
+          gender: patientData.gender,
+          dateOfBirth: patientData.dateOfBirth,
+          middleName: patientData.middleName,
+        });
+
+        await bahmni.createPatientPage.savePatient();
+        await page.waitForURL(/.*\/patient\/[a-f0-9-]+/, { waitUntil: 'domcontentloaded', timeout: 45000 });
+        patientId = await bahmni.createPatientPage.getPatientId();
+
+        // Start OPD visit
+        await bahmni.createPatientPage.saveAndStartOPDVisit();
+        await page.waitForLoadState('networkidle');
+      }
 
       // Navigate to Clinical module (only once!)
-      await bahmni.createPatientPage.navigateToHomePage();
+      await bahmni.homePage.goto();
       await bahmni.homePage.navigateToModule(bahmni.homePage.MODULES.CLINICAL);
 
-      // Select new-active tab and click on patient
+      // Select active tab and navigate to the patient
       await bahmni.activePatientsPage.selectTab('new-active');
       await bahmni.activePatientsPage.waitForPatientList();
       await bahmni.activePatientsPage.selectPatientById(patientId);
@@ -108,7 +118,7 @@ export const test = base.extend<ClinicalFixtures, WorkerFixtures>({
       // If we're in a consultation, navigate back to clinical dashboard
       await bahmni.createPatientPage.navigateToHomePage();
       await bahmni.homePage.navigateToModule(bahmni.homePage.MODULES.CLINICAL);
-      await bahmni.activePatientsPage.selectTab('new-active');
+      await bahmni.activePatientsPage.selectTab('Active');
       await bahmni.activePatientsPage.waitForPatientList();
       await bahmni.activePatientsPage.selectPatientById(patientId);
       await page.waitForLoadState('networkidle', { timeout: 10000 });

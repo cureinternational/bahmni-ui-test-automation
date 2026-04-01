@@ -9,22 +9,28 @@ Playwright-based test automation framework for Bahmni 3.0 UI, including function
 ## Environment Setup
 
 ### Required Environment Files
+
 Create `.env.local` or `.env.dev` files from `.env.example` with:
+
 - `BASE_URL`: Bahmni instance URL
 - User credentials for 4 roles: `USER_ADMIN_*`, `USER_DOCTOR_*`, `USER_NURSE_*`, `USER_RECEPTIONIST_*`
 - `DEFAULT_LOCATION`: Login location (default: `OPD-1`)
 
 ### Local Testing with SSL Certificates
+
 For local Bahmni instances with self-signed certificates:
+
 ```bash
 docker exec bahmni-standard-proxy-1 cat /etc/tls/cert.pem > /tmp/bahmni-cert.pem
 sudo security add-trusted-cert -d -r trustRoot -p ssl -k /Library/Keychains/System.keychain /tmp/bahmni-cert.pem
 ```
+
 The certificate must remain at `/tmp/bahmni-cert.pem` as npm scripts reference this path.
 
 ## Common Commands
 
 ### Running Tests
+
 ```bash
 # Local environment (requires SSL cert setup)
 npm run test:local
@@ -51,6 +57,7 @@ npm run test:ui
 ```
 
 ### Code Quality
+
 ```bash
 npm run lint              # Check for errors
 npm run lint:fix          # Auto-fix errors
@@ -59,6 +66,7 @@ npm run format:check      # Check formatting
 ```
 
 ### Test Reports
+
 ```bash
 # Allure reports
 npm run allure:serve      # Quick view (recommended)
@@ -73,10 +81,12 @@ npm run report
 ## Architecture
 
 ### Global Setup/Teardown
+
 - **`global-setup.ts`**: Runs once before all tests to verify environment accessibility and create OpenMRS relationship types (Father/Son, Mother/Son, Husband/Wife, Elder Sibling/Younger Sibling) via REST API
 - **`global-teardown.ts`**: Runs once after all tests
 
 ### Page Object Model
+
 All page objects are in `src/pages/` and accessed through **PageFactory** (single point of access):
 
 ```typescript
@@ -86,6 +96,7 @@ await bahmni.createPatientPage.createPatient(data);
 ```
 
 Key page objects:
+
 - `LoginPage`, `LocationPage`, `HomePage`: Authentication and navigation
 - `RegistrationSearchPage`, `CreatePatientPage`: Patient registration
 - `ClinicalPage`, `ConsultationDashboard`, `NewConsultationPage`: Clinical workflows
@@ -93,7 +104,9 @@ Key page objects:
 - Form pages: `VitalsForm`, `AdmissionLetterForm`, `DeathNoteForm`, `HistoryAndExaminationForm`
 
 ### Test Fixtures
+
 **`src/fixtures/clinicalFixture.ts`**: Worker-scoped fixture that optimizes clinical test performance by:
+
 1. Creating a patient once per worker
 2. Logging in once and maintaining the session
 3. Starting an OPD visit
@@ -115,7 +128,9 @@ test.describe.serial('Clinical Tests', () => {
 The fixture ensures you're on the clinical dashboard between tests, not stuck in a consultation.
 
 ### Configuration
+
 **`src/config/env.config.ts`**: Centralized configuration with:
+
 - `config.baseUrl`: Base URL from env
 - `config.urls`: Constructed application URLs
 - `config.users`: Credentials for all roles (admin, doctor, nurse, receptionist)
@@ -124,7 +139,9 @@ The fixture ensures you're on the clinical dashboard between tests, not stuck in
 - `config.playwright`: Playwright settings from env
 
 ### Test Data
+
 Test data files in `test-data/` use faker libraries to generate:
+
 - `patientData.ts`: Patient demographics with `generatePatientData()`
 - `allergyData.ts`: Allergies with allergens, severity, reactions
 - `diagnosisData.ts`: Conditions and diagnoses
@@ -134,13 +151,16 @@ Test data files in `test-data/` use faker libraries to generate:
 - `admissionLetterData.ts`: Observation forms
 
 ### Environment Switching
+
 Tests use `NODE_ENV` to switch between environments:
+
 - `NODE_ENV=local` loads `.env.local` (requires `NODE_EXTRA_CA_CERTS=/tmp/bahmni-cert.pem`)
 - `NODE_ENV=dev` loads `.env.dev` (default)
 
 ## Playwright Configuration
 
 **`playwright.config.ts`** configures:
+
 - Test directory: `./tests`
 - Parallel execution: Fully parallel (except on CI)
 - Retries: 2 on CI, 0 locally
@@ -153,10 +173,12 @@ Tests use `NODE_ENV` to switch between environments:
 ## Test Organization
 
 Tests are organized by module:
+
 - `tests/registration/`: Patient registration flows
 - `tests/clinical/`: Clinical consultation workflows
 
 Tests use either:
+
 1. Standard Playwright fixtures for independent tests
 2. Clinical fixture for sequential tests sharing a patient/session
 

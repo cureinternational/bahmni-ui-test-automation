@@ -36,8 +36,9 @@ export class CreatePatientPage {
     // Patient ID format - Dynamic ID
     patientIdFormatDropdown: 'button[role="combobox"]:has-text("ABC")',
 
-    // CURE patient checkbox (old registration UI)
-    curePatientCheckbox: 'input[type="checkbox"][name="shouldGenerateIdentifier"]',
+    // CURE patient checkbox
+    curePatientCheckbox:
+      'label:has-text("CURE patient") input, input[type="checkbox"][name="shouldGenerateIdentifier"]',
 
     // Basic information - Support both old and new registration UIs
     firstNameInput: '#first-name, input[placeholder="First Name"]',
@@ -85,7 +86,7 @@ export class CreatePatientPage {
 
     // Action buttons
     saveButton: 'button:has-text("Save")',
-    startOPDVisitButton: '#visit-button',
+    startOPDVisitButton: 'button:has-text("Start OPD visit")',
     visitTypeDropdown: 'button[role="combobox"]:has(img[alt="Open menu"])',
     backToSearchButton: 'button:has-text("Back to search patient")',
   } as const;
@@ -300,8 +301,9 @@ export class CreatePatientPage {
     email?: string;
     registrationLocation?: string;
   }) {
-    // Check CURE patient checkbox if present (old registration UI)
-    const cureCheckbox = this.page.locator(this.selectors.curePatientCheckbox);
+    // Check CURE patient checkbox (required for patient to appear in Clinical module)
+    const cureCheckbox = this.page.locator(this.selectors.curePatientCheckbox).first();
+    await cureCheckbox.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
     if (await cureCheckbox.isVisible().catch(() => false)) {
       await cureCheckbox.check();
     }

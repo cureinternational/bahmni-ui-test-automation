@@ -181,7 +181,10 @@ export class PatientPage {
     await this.page.locator('#patientIdentifier').click();
     await this.page.locator('#patientIdentifier').fill(patientID);
     await this.page.keyboard.press('Enter');
-    await this.page.getByText(patientID).click();
+    // Wait for search results table to load, then click the matching patient row
+    await this.page.locator('table tbody tr').first().waitFor({ state: 'visible', timeout: 15000 });
+    await this.page.locator(`td:has-text("${patientID}")`).first().click();
+    await this.page.waitForURL(/\/patient\/[a-f0-9-]+\/dashboard/, { timeout: 15000 });
   }
 
   /**

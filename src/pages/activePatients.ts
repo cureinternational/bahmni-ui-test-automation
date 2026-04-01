@@ -19,7 +19,7 @@ export class ActivePatientsPage {
   private readonly selectors = {
     // Tab buttons
     activeTab: 'a:has-text("Active")',
-    newActiveTab: 'a:has-text("New - Active")',
+    newActiveTab: 'a:has-text("Active")',
     toAdmitTab: 'a:has-text("To Admit")',
     toDischargeTab: 'a:has-text("To Discharge")',
 
@@ -61,9 +61,13 @@ export class ActivePatientsPage {
    * @param patientId - Patient ID to click
    */
   async selectPatientById(patientId: string) {
-    await this.waitForPatientList();
+    // Search for patient to narrow the list
+    const searchInput = this.page.locator(this.selectors.searchBox).first();
+    await searchInput.fill(patientId);
+    await searchInput.press('Enter');
+    await this.page.waitForLoadState('networkidle');
     // Click on the patient ID text which will open the patient's clinical page
-    await this.page.getByText(patientId, { exact: true }).click();
+    await this.page.getByText(patientId, { exact: true }).first().click();
   }
 
   /**
@@ -89,7 +93,7 @@ export class ActivePatientsPage {
    * Wait for patient list to load
    */
   async waitForPatientList() {
-    // Wait for any patient card to appear (they have patient IDs starting with ABC)
-    await this.page.locator('text=/ABC\\d+/').first().waitFor({ timeout: 10000 });
+    // Wait for the patient table or search input to be visible
+    await this.page.locator('table, input[type="text"]').first().waitFor({ timeout: 15000 });
   }
 }
