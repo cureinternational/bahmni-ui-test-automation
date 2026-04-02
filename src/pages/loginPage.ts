@@ -1,11 +1,13 @@
 import { Page } from '@playwright/test';
 import { config } from '../config/env.config';
+import { CatoAuthPage } from './catoAuthPage';
 
 /**
  * LoginPage class for Bahmni EMR login page
  */
 export class LoginPage {
   private readonly page: Page;
+  private readonly catoAuth: CatoAuthPage;
 
   // Constants for locale options
   readonly LOCALE_OPTIONS = {
@@ -30,13 +32,19 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
+    this.catoAuth = new CatoAuthPage(page);
   }
 
   /**
    * Navigate to the login page
+   * Handles Cato authentication if credentials are configured
    */
   async goto() {
-    await this.page.goto(config.urls.login);
+    // Authenticate with Cato if required (QA environment)
+    await this.catoAuth.authenticateIfNeeded();
+
+    // Navigate to login page
+    await this.page.goto(config.urls.login, { waitUntil: 'domcontentloaded', timeout: 15000 });
   }
 
   /**

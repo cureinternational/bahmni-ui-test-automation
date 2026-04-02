@@ -46,6 +46,9 @@ jobs:
           echo "USER_RECEPTIONIST_USERNAME=$USER_RECEPTIONIST_USERNAME" >> .env.et
           echo "USER_RECEPTIONIST_PASSWORD=$USER_RECEPTIONIST_PASSWORD" >> .env.et
           echo "DEFAULT_LOCATION=$DEFAULT_LOCATION" >> .env.et
+          echo "CATO_USERNAME=$CATO_USERNAME" >> .env.et
+          echo "CATO_PASSWORD=$CATO_PASSWORD" >> .env.et
+          echo "CATO_API_KEY=$CATO_API_KEY" >> .env.et
           echo "HEADLESS=true" >> .env.et
           echo "TIMEOUT=60000" >> .env.et
         env:
@@ -59,6 +62,9 @@ jobs:
           USER_RECEPTIONIST_USERNAME: ${{ secrets.USER_RECEPTIONIST_USERNAME }}
           USER_RECEPTIONIST_PASSWORD: ${{ secrets.USER_RECEPTIONIST_PASSWORD }}
           DEFAULT_LOCATION: ${{ secrets.DEFAULT_LOCATION }}
+          CATO_USERNAME: ${{ secrets.CATO_USERNAME }}
+          CATO_PASSWORD: ${{ secrets.CATO_PASSWORD }}
+          CATO_API_KEY: ${{ secrets.CATO_API_KEY }}
 
       - name: Run Playwright tests
         run: NODE_ENV=et npx playwright test tests/registration/sanity.spec.ts --project=chromium

@@ -93,4 +93,11 @@ export const config = {
     phone: getOptionalEnv('DEFAULT_PATIENT_PHONE', '9876543210'),
     email: getOptionalEnv('DEFAULT_PATIENT_EMAIL', 'test@example.com'),
   },
+
+  // Cato Credentials (QA environment)
+  cato: {
+    username: getOptionalEnv('CATO_USERNAME', ''),
+    password: getOptionalEnv('CATO_PASSWORD', ''),
+    apiKey: getOptionalEnv('CATO_API_KEY', ''),
+  },
 };

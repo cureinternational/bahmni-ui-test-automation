@@ -8,7 +8,11 @@ fileignoreconfig:
 - filename: package-lock.json
   checksum: aafdfa86d2b5c86ad40ef878b37709be93ec52ac401b791b723a01e62e5d8214
 - filename: src/config/env.config.ts
-  checksum: bc3bc4eff4ee2d7d404d4a71ecca7f25cdc4b02b1325dd44bc459febe01d9d24
+  checksum: d409367456fdeeb6a133ff4f56341174ca8c4db68a973da2acdf1d79dda70082
 - filename: .github/workflows/playwright-tests.yml
-  checksum: 2732242b06e46017d870b53d934a86994a447a579d1d0a445a2759b5a2cedca0
+  checksum: feaf925c23bdbcbed2850cd97140d08ad58e816430611e5311444ecd9ec795a5
+- filename: src/pages/catoAuthPage.ts
+  checksum: 3a951935a4b1e95cd0daa7e5186eefaf5de0f22158be366ceb3cb9d5aef7437f
+- filename: src/pages/loginPage.ts
+  checksum: cafcb9b1d236a7a7a90e8074a6a7ca04a818c3b305850d3d990e05c2974be98d
 version: "1.0"
