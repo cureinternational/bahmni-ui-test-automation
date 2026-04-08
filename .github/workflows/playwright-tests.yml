@@ -42,20 +42,49 @@ jobs:
 
       - name: Configure and Connect CATO
         run: |
+          echo "=== CATO Configuration Starting ==="
+
           # Start CATO client service
-          sudo systemctl start cato-client || true
+          echo "Starting CATO client service..."
+          sudo systemctl start cato-client || echo "Failed to start service"
 
           # Wait for service to be ready
+          echo "Waiting for CATO service to initialize..."
           sleep 5
 
-          # Login to CATO (configure credentials from secrets)
-          cato-cli login --username "$CATO_USERNAME" --password "$CATO_PASSWORD" || true
+          # Check if cato-cli is available
+          echo "Checking cato-cli availability..."
+          which cato-cli || echo "cato-cli not found in PATH"
+          cato-cli --version || echo "Could not get cato-cli version"
 
-          # Connect to CATO network
-          cato-cli connect || true
+          # Login to CATO with verbose output
+          echo "Attempting CATO login..."
+          cato-cli login --username "$CATO_USERNAME" --password "$CATO_PASSWORD" -v 2>&1 || {
+            echo "Login failed - checking service status"
+            sudo systemctl status cato-client || true
+          }
 
-          # Wait for connection to establish
-          sleep 10
+          # Connect to CATO network with verbose output
+          echo "Connecting to CATO network..."
+          cato-cli connect -v 2>&1 || echo "Connect command failed"
+
+          # Wait longer for connection to establish
+          echo "Waiting for CATO network connection to establish..."
+          sleep 15
+
+          # Check CATO status with detailed output
+          echo "Checking CATO status..."
+          cato-cli status -v 2>&1 || echo "Status check failed"
+
+          # List network interfaces to verify tunnel
+          echo "Network interfaces:"
+          ip addr show || ifconfig || true
+
+          # Test DNS resolution
+          echo "Testing DNS resolution:"
+          nslookup bahmni.local || host bahmni.local || dig bahmni.local || true
+
+          echo "=== CATO Configuration Complete ==="
         env:
           CATO_USERNAME: ${{ secrets.CATO_USERNAME }}
           CATO_PASSWORD: ${{ secrets.CATO_PASSWORD }}
@@ -63,10 +92,38 @@ jobs:
 
       - name: Verify CATO Connection
         run: |
-          echo "Checking CATO status..."
-          cato-cli status || echo "CATO status check completed"
-          echo "Testing connectivity to BASE_URL..."
-          curl -I $BASE_URL --max-time 10 || echo "Initial connectivity check completed"
+          echo "=== CATO Connectivity Verification ==="
+
+          echo "1. Checking CATO daemon status..."
+          sudo systemctl is-active cato-client || echo "CATO service not running"
+          sudo systemctl status cato-client 2>&1 | head -20 || true
+
+          echo ""
+          echo "2. Checking CATO CLI status..."
+          cato-cli status -v 2>&1 || echo "CATO CLI status failed"
+
+          echo ""
+          echo "3. Checking network connectivity..."
+          ping -c 3 8.8.8.8 || echo "Public DNS ping failed"
+
+          echo ""
+          echo "4. Testing BASE_URL connectivity..."
+          echo "BASE_URL: $BASE_URL"
+          curl -v --max-time 15 "$BASE_URL" 2>&1 | head -50 || echo "curl to BASE_URL failed"
+
+          echo ""
+          echo "5. Checking routing..."
+          route -n || netstat -rn || ip route show || echo "Cannot show routing table"
+
+          echo ""
+          echo "6. Checking DNS..."
+          cat /etc/resolv.conf || echo "Cannot read resolv.conf"
+
+          echo ""
+          echo "7. Checking for CATO tunnel interface..."
+          ip addr show | grep -i tun || echo "No tunnel interface found"
+
+          echo "=== Verification Complete ==="
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
         continue-on-error: true
@@ -104,7 +161,14 @@ jobs:
           CATO_API_KEY: ${{ secrets.CATO_API_KEY }}
 
       - name: Run Playwright tests
-        run: NODE_ENV=et npx playwright test tests/registration/sanity.spec.ts --project=chromium
+        run: |
+          echo "=== Starting Playwright Tests ==="
+          echo "Environment: NODE_ENV=et"
+          echo "Timeout: 60000ms (from env)"
+          NODE_ENV=et npx playwright test tests/registration/sanity.spec.ts --project=chromium --reporter=list --reporter=html 2>&1
+        env:
+          DEBUG: pw:api
+          PWDEBUG: 0
         continue-on-error: true   # always publish reports even if tests fail
 
       - name: Upload HTML report
