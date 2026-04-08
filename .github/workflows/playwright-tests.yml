@@ -34,6 +34,43 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      - name: Download CATO Client
+        run: |
+          wget https://clientdownload.catonetworks.com/cato-client-linux.rpm -O cato-client.rpm
+          sudo rpm -ivh cato-client.rpm || true
+        continue-on-error: true
+
+      - name: Configure and Connect CATO
+        run: |
+          # Start CATO client service
+          sudo systemctl start cato-client || true
+
+          # Wait for service to be ready
+          sleep 5
+
+          # Login to CATO (configure credentials from secrets)
+          cato-cli login --username "$CATO_USERNAME" --password "$CATO_PASSWORD" || true
+
+          # Connect to CATO network
+          cato-cli connect || true
+
+          # Wait for connection to establish
+          sleep 10
+        env:
+          CATO_USERNAME: ${{ secrets.CATO_USERNAME }}
+          CATO_PASSWORD: ${{ secrets.CATO_PASSWORD }}
+        continue-on-error: true
+
+      - name: Verify CATO Connection
+        run: |
+          echo "Checking CATO status..."
+          cato-cli status || echo "CATO status check completed"
+          echo "Testing connectivity to BASE_URL..."
+          curl -I $BASE_URL --max-time 10 || echo "Initial connectivity check completed"
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+        continue-on-error: true
+
       - name: Write .env file
         run: |
           echo "BASE_URL=$BASE_URL" >> .env.et

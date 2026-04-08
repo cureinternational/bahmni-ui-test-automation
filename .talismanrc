@@ -10,7 +10,7 @@ fileignoreconfig:
 - filename: src/config/env.config.ts
   checksum: d409367456fdeeb6a133ff4f56341174ca8c4db68a973da2acdf1d79dda70082
 - filename: .github/workflows/playwright-tests.yml
-  checksum: feaf925c23bdbcbed2850cd97140d08ad58e816430611e5311444ecd9ec795a5
+  checksum: 9a6d1316683cda6f0280b9bf9bf0aae04028f02f00218e82d922799eed172a8d
 - filename: src/pages/catoAuthPage.ts
   checksum: 3a951935a4b1e95cd0daa7e5186eefaf5de0f22158be366ceb3cb9d5aef7437f
 - filename: src/pages/loginPage.ts
