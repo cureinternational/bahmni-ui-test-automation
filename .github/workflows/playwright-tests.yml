@@ -43,8 +43,17 @@ jobs:
         run: |
           echo "=== CATO Configuration Starting ==="
 
-          # Start CATO client
-          echo "Starting CATO client..."
+          # Start CATO daemon service
+          echo "Starting CATO daemon service..."
+          sudo systemctl start cato-client
+          sudo systemctl status cato-client
+
+          # Wait for daemon to be ready
+          echo "Waiting for CATO daemon to initialize..."
+          sleep 5
+
+          # Connect to CATO network
+          echo "Connecting to CATO network..."
           cato-sdp start
 
           # Wait for connection to establish
