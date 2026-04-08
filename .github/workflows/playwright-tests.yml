@@ -52,6 +52,11 @@ jobs:
           echo "Waiting for CATO daemon to initialize..."
           sleep 5
 
+          # Login to CATO with credentials
+          echo "Logging in to CATO..."
+          cato-sdp login --username "$CATO_USERNAME" --password "$CATO_PASSWORD"
+          sleep 3
+
           # Connect to CATO network
           echo "Connecting to CATO network..."
           cato-sdp start
