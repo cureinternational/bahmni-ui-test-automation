@@ -52,9 +52,9 @@ jobs:
           echo "Waiting for CATO daemon to initialize..."
           sleep 5
 
-          # Connect to CATO network with account subdomain
+          # Connect to CATO network with account subdomain and user
           echo "Connecting to CATO network..."
-          cato-sdp start --account cureinternational --no-sso
+          echo "$CATO_PASSWORD" | cato-sdp start --account cureinternational --user "$CATO_USERNAME" --no-sso
 
           # Wait for connection to establish
           echo "Waiting for CATO connection to establish..."
