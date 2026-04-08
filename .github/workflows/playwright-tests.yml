@@ -54,7 +54,7 @@ jobs:
 
           # Connect to CATO network with account subdomain and user
           echo "Connecting to CATO network..."
-          echo "$CATO_PASSWORD" | cato-sdp start --account cureinternational --user "$CATO_USERNAME" --no-sso
+          echo "$CATO_PASSWORD" | cato-sdp start --account cure --user "$CATO_USERNAME" --no-sso
 
           # Wait for connection to establish
           echo "Waiting for CATO connection to establish..."
