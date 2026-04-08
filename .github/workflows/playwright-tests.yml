@@ -36,7 +36,7 @@ jobs:
 
       - name: Download CATO Client
         run: |
-          wget https://clientdownload.catonetworks.com/cato-linux-install.deb -O cato-client.deb
+          wget https://clientdownload.catonetworks.com/public/clients/cato-client-install.deb -O cato-client.deb
           sudo dpkg -i cato-client.deb
 
       - name: Configure and Connect CATO
