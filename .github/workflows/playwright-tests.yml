@@ -36,97 +36,52 @@ jobs:
 
       - name: Download CATO Client
         run: |
-          wget https://clientdownload.catonetworks.com/cato-client-linux.rpm -O cato-client.rpm
-          sudo rpm -ivh cato-client.rpm || true
-        continue-on-error: true
+          wget https://clientdownload.catonetworks.com/cato-linux-install.deb -O cato-client.deb
+          sudo dpkg -i cato-client.deb
 
       - name: Configure and Connect CATO
         run: |
           echo "=== CATO Configuration Starting ==="
 
-          # Start CATO client service
-          echo "Starting CATO client service..."
-          sudo systemctl start cato-client || echo "Failed to start service"
+          # Start CATO client
+          echo "Starting CATO client..."
+          cato-sdp start
 
-          # Wait for service to be ready
-          echo "Waiting for CATO service to initialize..."
-          sleep 5
+          # Wait for connection to establish
+          echo "Waiting for CATO connection to establish..."
+          sleep 10
 
-          # Check if cato-cli is available
-          echo "Checking cato-cli availability..."
-          which cato-cli || echo "cato-cli not found in PATH"
-          cato-cli --version || echo "Could not get cato-cli version"
-
-          # Login to CATO with verbose output
-          echo "Attempting CATO login..."
-          cato-cli login --username "$CATO_USERNAME" --password "$CATO_PASSWORD" -v 2>&1 || {
-            echo "Login failed - checking service status"
-            sudo systemctl status cato-client || true
-          }
-
-          # Connect to CATO network with verbose output
-          echo "Connecting to CATO network..."
-          cato-cli connect -v 2>&1 || echo "Connect command failed"
-
-          # Wait longer for connection to establish
-          echo "Waiting for CATO network connection to establish..."
-          sleep 15
-
-          # Check CATO status with detailed output
+          # Check CATO status
           echo "Checking CATO status..."
-          cato-cli status -v 2>&1 || echo "Status check failed"
-
-          # List network interfaces to verify tunnel
-          echo "Network interfaces:"
-          ip addr show || ifconfig || true
-
-          # Test DNS resolution
-          echo "Testing DNS resolution:"
-          nslookup bahmni.local || host bahmni.local || dig bahmni.local || true
+          cato-sdp status
 
           echo "=== CATO Configuration Complete ==="
         env:
           CATO_USERNAME: ${{ secrets.CATO_USERNAME }}
           CATO_PASSWORD: ${{ secrets.CATO_PASSWORD }}
-        continue-on-error: true
 
       - name: Verify CATO Connection
         run: |
           echo "=== CATO Connectivity Verification ==="
 
-          echo "1. Checking CATO daemon status..."
-          sudo systemctl is-active cato-client || echo "CATO service not running"
-          sudo systemctl status cato-client 2>&1 | head -20 || true
+          # Check if CATO is connected
+          if ! cato-sdp status | grep -qi "connected"; then
+            echo "ERROR: CATO VPN not connected"
+            cato-sdp status
+            exit 1
+          fi
 
-          echo ""
-          echo "2. Checking CATO CLI status..."
-          cato-cli status -v 2>&1 || echo "CATO CLI status failed"
+          echo "✓ CATO is connected"
 
-          echo ""
-          echo "3. Checking network connectivity..."
-          ping -c 3 8.8.8.8 || echo "Public DNS ping failed"
-
-          echo ""
-          echo "4. Testing BASE_URL connectivity..."
-          echo "BASE_URL: $BASE_URL"
-          curl -v --max-time 15 "$BASE_URL" 2>&1 | head -50 || echo "curl to BASE_URL failed"
-
-          echo ""
-          echo "5. Checking routing..."
-          route -n || netstat -rn || ip route show || echo "Cannot show routing table"
-
-          echo ""
-          echo "6. Checking DNS..."
-          cat /etc/resolv.conf || echo "Cannot read resolv.conf"
-
-          echo ""
-          echo "7. Checking for CATO tunnel interface..."
-          ip addr show | grep -i tun || echo "No tunnel interface found"
+          # Test connectivity to BASE_URL
+          echo "Testing BASE_URL connectivity..."
+          curl -v --max-time 15 "$BASE_URL" -o /dev/null -w "HTTP Status: %{http_code}\n" || {
+            echo "WARNING: Could not reach BASE_URL, but continuing with tests"
+          }
 
           echo "=== Verification Complete ==="
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
-        continue-on-error: true
 
       - name: Write .env file
         run: |
